@@ -4,7 +4,7 @@ import com.Icwd.electronic.store.dtos.UserDto;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService<pageNumber> {
 
     //create
     UserDto createUser(UserDto userDto);
@@ -17,7 +17,7 @@ public interface UserService {
 
 
     //get All user
-    List <UserDto> getAllUser();
+    List <UserDto> getAllUser(int pageNumber,int pageSize);
 
     //get single user by id
     UserDto getUserById(String userId);
