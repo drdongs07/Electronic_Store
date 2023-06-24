@@ -110,7 +110,7 @@ public class UserController {
         UserDto userDto = userService.updateUser(user, userId);
 
 
-        ImageResponse imageResponse= ImageResponse.builder().imageName(imageName).status(HttpStatus.CREATED).build();
+        ImageResponse imageResponse= ImageResponse.builder().message("image uploaded successfully!").imageName(imageName).success(true).status(HttpStatus.CREATED).build();
 
         return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
