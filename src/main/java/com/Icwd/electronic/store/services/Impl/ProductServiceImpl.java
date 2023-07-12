@@ -2,9 +2,11 @@ package com.Icwd.electronic.store.services.Impl;
 
 import com.Icwd.electronic.store.dtos.PageableResponse;
 import com.Icwd.electronic.store.dtos.ProductDto;
+import com.Icwd.electronic.store.entities.Category;
 import com.Icwd.electronic.store.entities.Product;
 import com.Icwd.electronic.store.exceptions.ResourceNotFoundException;
 import com.Icwd.electronic.store.helper.Helper;
+import com.Icwd.electronic.store.repositories.CategoryRepository;
 import com.Icwd.electronic.store.repositories.ProductRepository;
 import com.Icwd.electronic.store.services.ProductService;
 import net.bytebuddy.TypeCache;
@@ -28,6 +30,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public ProductDto create(ProductDto productDto) {
@@ -96,5 +101,23 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Product> page = productRepository.findByTitleContaining(subTitle, pageable);
         return Helper.getUPageableResponse(page, ProductDto.class);
+    }
+
+    @Override
+    public ProductDto createWithCategory(ProductDto productDto, String categoryId) {
+
+        // fetch the category from db;
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with the given id!!"));
+        Product product = mapper.map(productDto, Product.class);
+        //generate id
+        String productId = UUID.randomUUID().toString();
+        product.setProductId(productId);
+
+        //added date
+        product.setAddedDate(new Date());
+        product.setCategory(category);
+        Product saveProduct = productRepository.save(product);
+        return mapper.map(saveProduct , ProductDto.class);
+
     }
 }
